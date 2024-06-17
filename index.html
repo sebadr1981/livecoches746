@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de 7 horas y 46 minutos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #contador, #faltan {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #tiempo {
+            font-size: 24px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        #iniciar {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="contador">0 coches</div>
+    <div id="faltan">Faltan 366 coches</div>
+    <div id="tiempo">Tiempo transcurrido: 00:00:00</div>
+    <button id="iniciar">Iniciar</button>
+
+    <script>
+        const totalTime = 7 * 60 * 60 * 1000 + 46 * 60 * 1000; // 7 horas y 46 minutos en milisegundos
+        const endValue = 366;
+        const intervalTime = totalTime / (endValue - 1); // Tiempo en milisegundos entre cada incremento
+
+        let currentValue = 0;
+        let startTime;
+        let timerInterval;
+        const contador = document.getElementById('contador');
+        const faltan = document.getElementById('faltan');
+        const tiempo = document.getElementById('tiempo');
+        const iniciarBtn = document.getElementById('iniciar');
+
+        function updateCounter() {
+            if (currentValue <= endValue) {
+                contador.textContent = `${currentValue} coches`;
+                faltan.textContent = `Faltan ${endValue - currentValue} coches`;
+                currentValue++;
+                setTimeout(updateCounter, intervalTime);
+            } else {
+                clearInterval(timerInterval);
+            }
+        }
+
+        function updateTime() {
+            const elapsedTime = Date.now() - startTime;
+            const hours = Math.floor((elapsedTime / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((elapsedTime / (1000 * 60)) % 60);
+            const seconds = Math.floor((elapsedTime / 1000) % 60);
+            tiempo.textContent = `Tiempo transcurrido: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function startCounter() {
+            startTime = Date.now();
+            updateCounter();
+            timerInterval = setInterval(updateTime, 1000);
+            iniciarBtn.disabled = true;
+        }
+
+        iniciarBtn.addEventListener('click', startCounter);
+    </script>
+</body>
+</html>
